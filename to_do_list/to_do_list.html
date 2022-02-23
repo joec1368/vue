@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<style>
+    .done {
+        color: gray;
+    }
+</style>
+
+<head>
+</head>
+
+<body>
+
+    <script src="https://unpkg.com/vue@next"></script>
+
+
+    <div id="demo">
+
+        <h3>tasks:{{notyet}} tasks Done:{{already}} </h3>
+
+        <button type="button" v-on:click="alldelete"> tasks byebye </button>
+        <button type="button" v-on:click="deletedone"> done tasks byebye </button>
+        <h4></h4>
+        <button type="button" v-on:click="create">add</button>
+        <input v-model="message"> {{message}}
+        <list v-for="(column, index) in columns" :target="column.message" :id="index" @bye="bye" @change="change" :key="column.time">
+
+        </list>
+    </div>
+
+    <script>
+        const vm = Vue.createApp({
+            data() {
+                return {
+                    message: 'Hello',
+                    notyet: 0,
+                    already: 0,
+                    columns: []
+                }
+            },
+            watch: {
+
+            },
+            methods: {
+                checknonetodolist() {
+                    console.log("still");
+                    this.notyet = 0;
+                    this.already = 0;
+                    if (this.columns.length == 0) {
+
+                    } else {
+                        var i = 0;
+                        for (; i < this.columns.length; i++) {
+                            if (this.columns[i].isActive == false) this.notyet++;
+                            else this.already++;
+
+                        }
+                    }
+                },
+
+                change(id) {
+                    this.columns[id].isActive = !this.columns[id].isActive;
+                    console.log(this.columns[id].isActive);
+                    this.checknonetodolist();
+
+                },
+                alldelete() {
+                    this.columns.splice(0, this.columns.length);
+                    this.checknonetodolist();
+
+                },
+                bye(id) {
+                    console.log(id)
+                    this.columns.splice(id, 1);
+                    console.log(this.columns);
+                    this.checknonetodolist();
+
+                },
+                deletedone() {
+                    if (this.columns.length == 0) {} else {
+                        var i = 0;
+                        for (; i < this.columns.length; i++) {
+                            if (this.columns[i].isActive == true) this.bye(i--);
+
+                        }
+                    }
+                    this.checknonetodolist();
+                },
+                create() {
+                    console.log('in create')
+                    var time = Date.now();
+
+                    this.columns.push({
+                        "message": this.message,
+                        "time": time,
+                        "isActive": false
+                    })
+                    console.log(this.columns);
+                    this.checknonetodolist();
+                },
+
+            }
+
+        });
+        vm.component('list', {
+            name: `list`,
+            template: `<div>
+                        <button type = "button" v-on:click = "this.$emit('change',this.id);Active = !Active"  >Ok</button>
+                        <span :class="{done : Active}">{{message}}</span>
+        <button type="button" v-on:click="this.$emit('bye',this.id);">delete</button>
+    </div>`,
+            props: ['target', 'id', 'isActive'],
+            data() {
+                return {
+                    Active: this.isActive,
+                    message: this.target
+                }
+            },
+            watch: {},
+            methods: {}
+        });
+        vm.mount('#demo');
+    </script>
+
+
+
+</body>
+
+
+</html>
