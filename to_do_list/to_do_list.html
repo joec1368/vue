@@ -76,28 +76,12 @@
                     var temp_message = this.columns[i].message;
                     var temp_active = !this.columns[i].isActive;
                     console.log(temp_active);
-                    /*this.columns[i] = {
-                        "message": temp_message,
-                        "time": message,
-                        "isActive": temp_active
-                    };*/
-
                     let arr = this.columns.slice();
                     arr[i].isActive = temp_active;
                     this.columns = arr;
                     for (var y = 0; y < this.columns.length; y++) {
                         this.columns[y].time += 1;
                     }
-
-                    //this.$forceUpdate();
-                    /*this.columns.push({
-                        "message": temp_message + "s",
-                        "time": message,
-                        "isActive": temp_active
-                    });*/
-
-                    //this.columns.splice(i, 1);
-                    //this.columns[i].isActive = !this.columns[i].isActive;
                     this.checknonetodolist();
                 },
                 alldelete() {
@@ -106,11 +90,8 @@
 
                 },
                 bye(message) {
-                    var i = 0;
-                    for (; i < this.columns.length; i++) {
-                        if (this.columns[i].time == message) break;
-                    }
-                    this.columns.splice(i, 1);
+
+                    this.columns.splice(message, 1);
                     this.checknonetodolist();
 
                 },
@@ -154,7 +135,6 @@
             name: `list`,
             template: `<div>
                   <button type = "button" v-on:click = "this.$emit('change',newtime);"  >Ok</button>
-                        <span>{{Active ? "yes" : "no"}}</span>
                         <span v-if="Active" class = "done">{{message}}</span>
                         <span v-else >{{message}}</span>
                         <button type="button" v-on:click="this.$emit('bye',newtime);">delete</button>
