@@ -81,9 +81,13 @@
                         "time": message,
                         "isActive": temp_active
                     };*/
+
                     let arr = this.columns.slice();
                     arr[i].isActive = temp_active;
                     this.columns = arr;
+                    for (var y = 0; y < this.columns.length; y++) {
+                        this.columns[y].time += 1;
+                    }
 
                     //this.$forceUpdate();
                     /*this.columns.push({
