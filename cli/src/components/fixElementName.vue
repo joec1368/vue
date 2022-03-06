@@ -1,26 +1,21 @@
 <template>
-    <button type = "button" @click = "this.$emit('changeStateOfIsactive',newtime);"  >Ok</button>
-    <span v-if="Active" class = "done">{{message}}</span>
-    <span v-else >{{message}}</span>
-    <button type="button" @click="this.$emit('deleteCertainNode',newtime);">delete</button>
     <input v-model="premessage">
-    <button type = "button" @click = "fixToDoListName();"> fixToDoListName </button>
+    <button type = "button" @click = "fixElementName();"> fixElementName </button>
 </template>
 
 <script>
 export default{
-    name : 'nodeInList',
-    props: ['target', 'aaaa', 'time'],
+    name : 'buttonFixElementName',
+    props: ['target', 'time'],
     data() {
         return {
-            Active: this.aaaa,
             message: this.target,
             premessage: "none",
             newtime: this.time
         }
     },
     methods: {
-        fixToDoListName() {
+        fixElementName() {
             var update = [];
             this.message = this.premessage;
             update.push({
@@ -28,7 +23,8 @@ export default{
                 "newmessage": this.premessage,
                 "oldmessage": this.message,
             });
-            this.$emit('fixToDoListName', update);
+            console.log("send");
+            this.$emit('fixElementName', update);
             
         }
     }

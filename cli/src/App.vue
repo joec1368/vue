@@ -1,15 +1,15 @@
 <template>
 
-  <CreateButton></CreateButton>
+  <listToDoList></listToDoList>
 </template>
 
 <script>
-import CreateButton from './CreateButton.vue'
+import listToDoList from './list.vue'
 
 export default {
   name: 'App',
   components: {
-    CreateButton
+    listToDoList
   }
 }
 </script>
