@@ -1,7 +1,7 @@
 <template>
-    <button type="button"  @click = "this.$emit('setValue','all');" > show all tasks  </button>
-    <button type="button"  @click = "this.$emit('setValue','done');" > show done tasks </button>
-    <button type="button"  @click = "this.$emit('setValue','undone');" > show undone tasks </button>
+    <button type="button"  @click = "this.$emit('setShowValue','all');" > show all tasks  </button>
+    <button type="button"  @click = "this.$emit('setShowValue','done');" > show done tasks </button>
+    <button type="button"  @click = "this.$emit('setShowValue','undone');" > show undone tasks </button>
     <h4></h4>
 </template>
 
@@ -12,10 +12,10 @@
         name:'buttonDecideElementToShow',
         components: {
         },
-    props: ['value'],
+    props: ['showValue'],
     data() {
         return{
-            setValue : this.value
+            setShowValue : this.showValue
         }
     },
     methods: {

@@ -1,36 +1,38 @@
 <template>
     <h3>tasks:{{countUndoneTasks}} tasks Done:{{countDoneTasks}} </h3>
-    <h4></h4>
-    <button type="button" @click="deleteAllTasks" > tasks byebye </button>
-    <button type="button" @click="deleteDoneNode"> done tasks byebye </button>
-    <h4></h4>
-    <buttonDecideElementToShow :value="this.value" @setValue = "setValue"></buttonDecideElementToShow>
+    <br/>
+    <button type="button" @click="deleteAllTasks" > delete all tasks  </button>
+    <button type="button" @click="deleteDoneTask"> delete done tasks </button>
+    <br/>
+    <buttonDecideElementToShow :showValue="this.showValue" @setShowValue = "setShowValue"></buttonDecideElementToShow>
     
     <button type="button" @click="create">add</button>
     <input v-model="message"> {{message}}
-
-    <div v-for="element in decideWhatToShow" :key="element.time">
-        <buttonToggleElementState  :time="element.time" :aaaa="element.isActive" :target="element.message" @toggleElementState="toggleElementState" :key="element.time"></buttonToggleElementState>
-        <buttonDeleteCertainElement :time="element.time" @deleteCertainTask="deleteCertainTask" :key="element.time"></buttonDeleteCertainElement>>
-        <buttonFixElementName :time="element.time" :target="element.message" @fixElementName="fixElementName" :key="element.time"></buttonFixElementName>
-    </div>
+    <tasksComponents v-for="element,index in decideWhatToShow"
+        :key = "element.time"
+        :index = "index"
+        :time = "element.time"
+        :message = "element.message"
+        :active = "element.isActive"
+        @deleteCertainTask = "deleteCertainTask"
+        @toggleTaskState = "toggleTaskState"
+        @fixTaskName = "fixTaskName"
+        >
+        
+    </tasksComponents>
 
 </template>
 
 
 <script>
-    import buttonToggleElementState from './components/toggleElementState.vue'
-    import buttonFixElementName from './components/fixElementName.vue'
-    import buttonDeleteCertainElement from './components/deleteCertainElement.vue'
-    import buttonDecideElementToShow from './components/decideElementToShow'
+    import buttonDecideElementToShow from './components/decideElementToShow.vue'
+    import tasksComponents from './components/tasks.vue'
 
     export default{
         name:'listToDoList',
         components: {
-            buttonToggleElementState,
-            buttonDeleteCertainElement,
-            buttonFixElementName,
-            buttonDecideElementToShow
+            buttonDecideElementToShow,
+            tasksComponents
         },
     data() {
         return{
@@ -42,47 +44,36 @@
         }
     },
     methods: {
-        setValue(valueShow){
-            this.show = valueShow;
-        },
         forceToUpdate(){
-              for (var y = 0; y < this.list.length; y++) {
+            for (var y = 0; y < this.list.length; y++) {
                 this.list[y].time += 1;
             }
+            
         },
-        toggleElementState(message) {
-            console.log("receive state");
-            var i = 0;
-            for (; i < this.list.length; i++) {
-                if (this.list[i].time == message) break;
-            }
-            var temp_active = !this.list[i].isActive;
-            console.log(temp_active);
-            let arr = this.list.slice();
-            arr[i].isActive = temp_active;
-            this.list = arr;
-            this.forceToUpdate();    
+        setShowValue(valueShow){
+            this.show = valueShow;
+        },
+        toggleTaskState(index) {
+            console.log(index); 
+            this.list[index].isActive = !this.list[index].isActive;
+            console.log(this.list[index].isActive);
+            this.$forceUpdate();
         },
         deleteAllTasks() {
             this.list = [];
         },
-        deleteCertainTask(message) {
-            console.log(message);
+        deleteCertainTask(timeValue) {
             var i = 0;
-            for(; i <this.list.length ; i++){
-                if(message == this.list[i].time) break;
+            for (; i < this.list.length; i++) {
+                if (this.list[i].time == timeValue) break;
             }
-            this.list.splice(i, 1);
-            console.log(this.list);
+            this.list.splice(i,1);        
+            this.forceToUpdate();
         },
-        deleteDoneNode() {
+        deleteDoneTask() {
             if (this.list.length == 0); 
             else {
-                var i = 0;
-                for (; i < this.list.length; i++) {
-                    if (this.list[i].isActive) this.list.splice(i--, 1);
-
-                }
+                this.list = this.list.filter(i => i.isActive === false);
             }
         },
         create() {
@@ -90,17 +81,16 @@
             this.list.push({
                 "message": this.message,
                 "time": time,
-                "isActive": false
+                "isActive": false //預設是false代表還沒完成
             })
         },
-        fixElementName(update) {
-            console.log("get");
+        fixTaskName(updateMessagePack) { // updateMessagePack: [0].time / [0].message
             var i = 0;
             for (; i < this.list.length; i++) {
-                if (this.list[i].time == update[0].time) break;
+                if (this.list[i].time == updateMessagePack[0].time) break;
             }
-            this.list[i].message = update[0].newmessage;
-            this.forceToUpdate();           
+            this.list[i].message = updateMessagePack[0].message;          
+            this.forceToUpdate();
         }
     },
     computed: {
