@@ -1,7 +1,7 @@
 <template>
-    <button type="button"  @click = "this.$emit('setValue',0);" > show all tasks  </button>
-    <button type="button"  @click = "this.$emit('setValue',1);" > show done tasks </button>
-    <button type="button"  @click = "this.$emit('setValue',2);" > show undone tasks </button>
+    <button type="button"  @click = "this.$emit('setValue','all');" > show all tasks  </button>
+    <button type="button"  @click = "this.$emit('setValue','done');" > show done tasks </button>
+    <button type="button"  @click = "this.$emit('setValue','undone');" > show undone tasks </button>
     <h4></h4>
 </template>
 

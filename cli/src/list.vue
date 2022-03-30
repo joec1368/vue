@@ -1,7 +1,7 @@
 <template>
-    <h3>tasks:{{undoneTasks}} tasks Done:{{doneTasks}} </h3>
+    <h3>tasks:{{countUndoneTasks}} tasks Done:{{countDoneTasks}} </h3>
     <h4></h4>
-    <button type="button" @click="deleteAllNodes" > tasks byebye </button>
+    <button type="button" @click="deleteAllTasks" > tasks byebye </button>
     <button type="button" @click="deleteDoneNode"> done tasks byebye </button>
     <h4></h4>
     <buttonDecideElementToShow :value="this.value" @setValue = "setValue"></buttonDecideElementToShow>
@@ -11,7 +11,7 @@
 
     <div v-for="element in decideWhatToShow" :key="element.time">
         <buttonToggleElementState  :time="element.time" :aaaa="element.isActive" :target="element.message" @toggleElementState="toggleElementState" :key="element.time"></buttonToggleElementState>
-        <buttonDeleteCertainElement :time="element.time" @deleteCertainNode="deleteCertainNode" :key="element.time"></buttonDeleteCertainElement>>
+        <buttonDeleteCertainElement :time="element.time" @deleteCertainTask="deleteCertainTask" :key="element.time"></buttonDeleteCertainElement>>
         <buttonFixElementName :time="element.time" :target="element.message" @fixElementName="fixElementName" :key="element.time"></buttonFixElementName>
     </div>
 
@@ -35,35 +35,21 @@
     data() {
         return{
             message : "temp",
-            value: 0,
+            show: "all",
             undoneTasks: 0,
             doneTasks: 0, 
             list: []
         }
     },
     methods: {
-        setValue(newvalue){
-            this.value = newvalue;
+        setValue(valueShow){
+            this.show = valueShow;
         },
         forceToUpdate(){
               for (var y = 0; y < this.list.length; y++) {
                 this.list[y].time += 1;
             }
-            this.countElementNumber();
         },
-        countElementNumber() {
-            this.undoneTasks = 0;
-            this.doneTasks = 0;
-            if (this.list.length == 0);
-            else {
-                var i = 0;
-                for (; i < this.list.length; i++) {
-                    if (this.list[i].isActive == false) this.undoneTasks++;
-                    else this.doneTasks++;
-
-                    }
-                }
-            },
         toggleElementState(message) {
             console.log("receive state");
             var i = 0;
@@ -76,21 +62,17 @@
             arr[i].isActive = temp_active;
             this.list = arr;
             this.forceToUpdate();    
-            this.countElementNumber();
         },
-        deleteAllNodes() {
-            this.list.splice(0, this.list.length);
-            this.countElementNumber();
-
+        deleteAllTasks() {
+            this.list = [];
         },
-        deleteCertainNode(message) {
+        deleteCertainTask(message) {
             console.log(message);
             var i = 0;
             for(; i <this.list.length ; i++){
                 if(message == this.list[i].time) break;
             }
             this.list.splice(i, 1);
-            this.countElementNumber();
             console.log(this.list);
         },
         deleteDoneNode() {
@@ -102,7 +84,6 @@
 
                 }
             }
-            this.countElementNumber();
         },
         create() {
             var time = Date.now();
@@ -111,7 +92,6 @@
                 "time": time,
                 "isActive": false
             })
-            this.countElementNumber();
         },
         fixElementName(update) {
             console.log("get");
@@ -125,14 +105,27 @@
     },
     computed: {
         decideWhatToShow () {
-            if (this.value == 0) return this.list;
-            else if (this.value == 1) return this.list.filter(i => i.isActive === true);
-            else if (this.value == 2) return this.list.filter(i => i.isActive === false);
-            else return this.list; 
+            switch(this.show){
+                case 'all':
+                    return this.list;
+                case 'done':
+                    return this.list.filter(i => i.isActive === true);
+                case 'undone':
+                    return this.list.filter(i => i.isActive === false);
+                default:
+                    return this.list;
+            }
+        },
+        countDoneTasks(){
+           return this.list.filter(item => item.isActive).length;
+        },
+        countUndoneTasks(){
+            return this.list.filter(item => !item.isActive).length;
         },
     }
         
 }
+
 
 </script>
 
