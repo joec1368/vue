@@ -1,14 +1,19 @@
 <template>
     <h3>tasks:{{countUndoneTasks}} tasks Done:{{countDoneTasks}} </h3>
     <br/>
-    <button type="button" @click="deleteAllTasks" > delete all tasks  </button>
-    <button type="button" @click="deleteDoneTask"> delete done tasks </button>
+    <span test-data = "allTask">
+        <button type="button" @click="deleteAllTasks" > delete all tasks  </button>
+    </span>
+    <span test-data = "doneTask">
+        <button type="button" @click="deleteDoneTask"> delete done tasks </button>
+    </span>
     <br/>
     <buttonDecideElementToShow :showValue="this.showValue" @setShowValue = "setShowValue"></buttonDecideElementToShow>
-    
-    <button type="button" @click="create">add</button>
-    <input v-model="message"> {{message}}
-    <tasksComponents v-for="element,index in decideWhatToShow"
+    <span test-data = "create">
+        <button type="button" @click="create">add</button>
+    </span>
+    <input test-data = "taskName" v-model="message"> {{message}}
+    <tasksComponents test-data = "tasks" v-for="element,index in decideWhatToShow"
         :key = "element.time"
         :index = "index"
         :time = "element.time"
@@ -54,9 +59,8 @@
             this.show = valueShow;
         },
         toggleTaskState(index) {
-            console.log(index); 
+           // console.log("there" + index); 
             this.list[index].isActive = !this.list[index].isActive;
-            console.log(this.list[index].isActive);
             this.$forceUpdate();
         },
         deleteAllTasks() {
